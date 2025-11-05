@@ -14,12 +14,26 @@ import (
 )
 
 var reqCounter int64 = 0
+var mode string = "count"
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 	w.Write(body)
-	reqCounter++
+	switch mode {
+	case "log":
+		fmt.Printf("------> %s %s %s\n", time.Now().Format(time.DateTime), r.Method, r.URL.String())
+		for name, values := range r.Header {
+			for _, value := range values {
+				fmt.Printf("%s: %s\n", name, value)
+			}
+		}
+		fmt.Printf("--------------------\n")
+		fmt.Println(string(body))
+		fmt.Printf("--------------------\n")
+	case "count":
+		reqCounter++
+	}
 }
 
 func main() {
@@ -30,11 +44,25 @@ func main() {
 		}
 	}
 	delayBetweenPrints := 1
+	if d, ok := os.LookupEnv("PRINT_DELAY"); ok {
+		if parsed, err := strconv.Atoi(d); err == nil {
+			delayBetweenPrints = parsed
+		}
+	}
+	if m, ok := os.LookupEnv("MODE"); ok {
+		mode = m
+	}
 	portFlag := flag.Int("p", port, "port number to listen on")
 	delayFlag := flag.Int("d", delayBetweenPrints, "delay between prints in seconds")
+	modeFlag := flag.String("m", mode, "mode of operation (count, logbody or logheaders)")
 	flag.Parse()
 	port = *portFlag
 	delayBetweenPrints = *delayFlag
+	mode = *modeFlag
+	if mode != "count" && mode != "log" {
+		fmt.Println("Invalid mode specified. Valid modes are 'count' and 'log'.")
+		return
+	}
 
 	address := fmt.Sprintf(":%d", port)
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -60,12 +88,14 @@ func main() {
 			fmt.Println("Error shutting down server:", err)
 		}
 	}()
-	go func() {
-		for {
-			time.Sleep(time.Duration(delayBetweenPrints) * time.Second)
-			logUsage()
-		}
-	}()
+	if mode == "count" {
+		go func() {
+			for {
+				time.Sleep(time.Duration(delayBetweenPrints) * time.Second)
+				logUsage()
+			}
+		}()
+	}
 	wg.Wait()
 }
 
