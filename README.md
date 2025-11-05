@@ -1,6 +1,8 @@
 ### What it does : 
 
-This is a server that listens for HTTP requests and echoes back any data it receives. It also logs the number of requests it has handled every second.
+This is a server that listens for HTTP requests and echoes back any data it receives. 
+It also logs the number of requests it has handled every second (in counter mode).
+Or it can log detailed request information including method, URL, headers, and body (in log mode).
 Primary use case is for debugging and load testing.
 
 ### Run with one of the following commands: 
