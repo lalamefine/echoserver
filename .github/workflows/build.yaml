@@ -3,7 +3,7 @@ name: Go Build & Multi-Platform Release
 on:
   push:
     tags: 
-      - "v*.*.*"
+      - "v*.*"
 
 permissions:
   contents: write
