@@ -1,11 +1,11 @@
-### What it does : 
+## What it does : 
 
 This is a server that listens for HTTP requests and echoes back any data it receives. 
 It also logs the number of requests it has handled every second (in counter mode).
 Or it can log detailed request information including method, URL, headers, and body (in log mode).
 Primary use case is for debugging and load testing.
 
-### Run with one of the following commands: 
+## Run with one of the following commands: 
 ```sh
 go run main.go
 go build -o echoserver main.go && ./echoserver
@@ -23,21 +23,20 @@ Accepted environment variables:
 
 Flags take precedence over environment variables.
 
-### Docker compose example:
+## Docker compose example:
 ```yaml
 version: '3'
 services:
   echoserver:
     image: lalamefine/echoserver:latest
     ports:
-      - "80:80" # Required: map host port to container port
+      - "80:80" # Map host port to container port if needed
     environment:
       - PORT=80 #(optional) port number to listen on
       - PRINT_DELAY=1 #(optional) delay between prints in seconds
       - MODE=count #(optional) other mode is log
 ```
-### Sample outputs :
-#### Counter mode:
+### Sample output in count mode:
 ```
 >echoserver -p 8080
 Echoserver on :8080
@@ -46,10 +45,10 @@ Echoserver on :8080
 2025-11-05 23:59:30: 3 Requests
 2025-11-05 23:59:32: 1 Requests
 ```
-#### Log body mode on a GET request (Body empty):
+### Sample output in log mode on a GET request (Body empty):
 ```
->go run main.go -p 8080 -m log
-Echoserver on :8080
+>echoserver -p 80 -m log
+Echoserver on :80
 ------> 2025-11-06 00:06:54 GET /
 Accept-Encoding: gzip, deflate, br, zstd
 Upgrade-Insecure-Requests: 1
