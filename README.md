@@ -20,8 +20,12 @@ Accepted environment variables:
 - `PORT` : Port to listen on (default 80)
 - `PRINT_DELAY` : Delay between prints in seconds (default 1)
 - `MODE` : Mode of operation: "count" (default) to log request count, "log" to log request method, URL, Headers and body
+ - `SCT_TOKEN` : If set, the server will respond to `/.well-known/scale-test-claim-token.txt` with this token (plain text)
 
 Flags take precedence over environment variables.
+
+New endpoint:
+- `/.well-known/scale-test-claim-token.txt` : returns the SCT token as plain text when `SCT_TOKEN` env var is set or the `-sct_token` flag is provided
 
 ## Docker compose example:
 ```yaml
